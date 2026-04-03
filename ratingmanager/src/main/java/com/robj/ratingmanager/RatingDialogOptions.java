@@ -2,7 +2,7 @@ package com.robj.ratingmanager;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.support.annotation.StyleRes;
+import androidx.annotation.StyleRes;
 
 public class RatingDialogOptions {
 
