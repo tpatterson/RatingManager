@@ -2,8 +2,17 @@ package com.robj.ratingmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
+
 /**
  * Created by Rob J on 16/09/17.
  */
@@ -11,7 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 class RatingDialog {
 
     private final RatingDialogOptions ratingDialogOptions;
-    
+
     private String feedbackEmailAddress;
     private boolean showFeedbackOption;
 
@@ -25,73 +34,173 @@ class RatingDialog {
             showLeaveRatingPopup(context);
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
-        builder.setMessage(ratingDialogOptions.initialPopupMessage);
-        builder.setPositiveButton(ratingDialogOptions.initialPopupPositiveBtnText, (dialog, which) -> {
-            if(ratingDialogOptions.onInitialPositiveClickListener != null)
-                ratingDialogOptions.onInitialPositiveClickListener.onClick();
-            showLeaveRatingPopup(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
+        AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        TextView title = view.findViewById(R.id.dialog_title);
+        TextView message = view.findViewById(R.id.dialog_message);
+        ImageButton closeBtn = view.findViewById(R.id.dialog_close);
+        Button neutralBtn = view.findViewById(R.id.btn_neutral);
+        Button negativeBtn = view.findViewById(R.id.btn_negative);
+        Button positiveBtn = view.findViewById(R.id.btn_positive);
+
+        title.setText(ratingDialogOptions.initialPopupMessage);
+        message.setVisibility(View.GONE);
+
+        neutralBtn.setText(ratingDialogOptions.initialPopupLaterBtnText);
+        negativeBtn.setText(ratingDialogOptions.initialPopupNegativeBtnText);
+        positiveBtn.setText(ratingDialogOptions.initialPopupPositiveBtnText);
+        applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+
+        closeBtn.setOnClickListener(v -> {
+            DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setNegativeButton(ratingDialogOptions.initialPopupNegativeBtnText, (dialog, which) -> {
-            if(ratingDialogOptions.onInitialNegativeClickListener != null)
-                ratingDialogOptions.onInitialNegativeClickListener.onClick();
-            showFeedbackPopup(context);
-        });
-        builder.setNeutralButton(ratingDialogOptions.initialPopupLaterBtnText, (dialog, which) -> {
+
+        neutralBtn.setOnClickListener(v -> {
             if(ratingDialogOptions.onInitialLaterClickListener != null)
                 ratingDialogOptions.onInitialLaterClickListener.onClick();
             DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setCancelable(false);
-        builder.show();
+
+        negativeBtn.setOnClickListener(v -> {
+            if(ratingDialogOptions.onInitialNegativeClickListener != null)
+                ratingDialogOptions.onInitialNegativeClickListener.onClick();
+            dialog.dismiss();
+            showFeedbackPopup(context);
+        });
+
+        positiveBtn.setOnClickListener(v -> {
+            if(ratingDialogOptions.onInitialPositiveClickListener != null)
+                ratingDialogOptions.onInitialPositiveClickListener.onClick();
+            dialog.dismiss();
+            showLeaveRatingPopup(context);
+        });
+
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
     }
 
     public void showLeaveRatingPopup(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
-        builder.setTitle(ratingDialogOptions.ratingPopupTitle);
-        builder.setMessage(ratingDialogOptions.ratingPopupMessage);
-        builder.setPositiveButton(ratingDialogOptions.ratingPopupPositiveBtnText, (dialog, which) -> {
-            if(ratingDialogOptions.onRatingPositiveClickListener != null)
-                ratingDialogOptions.onRatingPositiveClickListener.onClick();
-            DataManager.setRatingLeft(context);
-            launchUrl(context, ratingDialogOptions.ratingUrl);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
+        AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        TextView title = view.findViewById(R.id.dialog_title);
+        TextView message = view.findViewById(R.id.dialog_message);
+        ImageButton closeBtn = view.findViewById(R.id.dialog_close);
+        Button neutralBtn = view.findViewById(R.id.btn_neutral);
+        Button negativeBtn = view.findViewById(R.id.btn_negative);
+        Button positiveBtn = view.findViewById(R.id.btn_positive);
+
+        title.setText(ratingDialogOptions.ratingPopupTitle);
+        message.setText(ratingDialogOptions.ratingPopupMessage);
+
+        neutralBtn.setText(ratingDialogOptions.ratingPopupLaterBtnText);
+        negativeBtn.setText(ratingDialogOptions.ratingPopupNeverBtnText);
+        positiveBtn.setText(ratingDialogOptions.ratingPopupPositiveBtnText);
+        applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+
+        closeBtn.setOnClickListener(v -> {
+            DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setNegativeButton(ratingDialogOptions.ratingPopupLaterBtnText, (dialog, which) -> {
+
+        neutralBtn.setOnClickListener(v -> {
             if(ratingDialogOptions.onRatingLaterClickListener != null)
                 ratingDialogOptions.onRatingLaterClickListener.onClick();
             DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setNeutralButton(ratingDialogOptions.ratingPopupNeverBtnText, (dialog, which) -> {
+
+        negativeBtn.setOnClickListener(v -> {
             if(ratingDialogOptions.onRatingNegativeClickListener != null)
                 ratingDialogOptions.onRatingNegativeClickListener.onClick();
             DataManager.setNeverAsk(context);
+            dialog.dismiss();
         });
-        builder.setCancelable(false);
-        builder.show();
+
+        positiveBtn.setOnClickListener(v -> {
+            if(ratingDialogOptions.onRatingPositiveClickListener != null)
+                ratingDialogOptions.onRatingPositiveClickListener.onClick();
+            DataManager.setRatingLeft(context);
+            dialog.dismiss();
+            launchUrl(context, ratingDialogOptions.ratingUrl);
+        });
+
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
     }
 
     private void showFeedbackPopup(final Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
-        builder.setTitle(ratingDialogOptions.feedbackPopupTitle);
-        builder.setMessage(ratingDialogOptions.feedbackPopupMessage);
-        builder.setPositiveButton(ratingDialogOptions.feedbackPopupPositiveBtnText, (dialog, which) -> {
-            if(ratingDialogOptions.onFeedbackPositiveClickListener != null)
-                ratingDialogOptions.onFeedbackPositiveClickListener.onClick();
-            DataManager.setFeedbackLeft(context);
-            launchEmailIntent(context, feedbackEmailAddress, ratingDialogOptions.feedbackEmailSubject, ratingDialogOptions.feedbackEmailBody);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
+        AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        TextView title = view.findViewById(R.id.dialog_title);
+        TextView message = view.findViewById(R.id.dialog_message);
+        ImageButton closeBtn = view.findViewById(R.id.dialog_close);
+        Button neutralBtn = view.findViewById(R.id.btn_neutral);
+        Button negativeBtn = view.findViewById(R.id.btn_negative);
+        Button positiveBtn = view.findViewById(R.id.btn_positive);
+
+        title.setText(ratingDialogOptions.feedbackPopupTitle);
+        message.setText(ratingDialogOptions.feedbackPopupMessage);
+
+        neutralBtn.setText(ratingDialogOptions.feedbackPopupLaterBtnText);
+        negativeBtn.setText(ratingDialogOptions.feedbackPopupNegativeBtnText);
+        positiveBtn.setText(ratingDialogOptions.feedbackPopupPositiveBtnText);
+        applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+
+        closeBtn.setOnClickListener(v -> {
+            DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setNegativeButton(ratingDialogOptions.feedbackPopupLaterBtnText, (dialog, which) -> {
+
+        neutralBtn.setOnClickListener(v -> {
             if(ratingDialogOptions.onFeedbackLaterClickListener != null)
                 ratingDialogOptions.onFeedbackLaterClickListener.onClick();
             DataManager.setAskLater(context);
+            dialog.dismiss();
         });
-        builder.setNeutralButton(ratingDialogOptions.feedbackPopupNegativeBtnText, (dialog, which) -> {
+
+        negativeBtn.setOnClickListener(v -> {
             if(ratingDialogOptions.onFeedbackNegativeClickListener != null)
                 ratingDialogOptions.onFeedbackNegativeClickListener.onClick();
             DataManager.setNeverAsk(context);
+            dialog.dismiss();
         });
-        builder.setCancelable(false);
-        builder.show();
+
+        positiveBtn.setOnClickListener(v -> {
+            if(ratingDialogOptions.onFeedbackPositiveClickListener != null)
+                ratingDialogOptions.onFeedbackPositiveClickListener.onClick();
+            DataManager.setFeedbackLeft(context);
+            dialog.dismiss();
+            launchEmailIntent(context, feedbackEmailAddress, ratingDialogOptions.feedbackEmailSubject, ratingDialogOptions.feedbackEmailBody);
+        });
+
+        dialog.show();
+        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+    }
+
+    private void applyTypeface(TextView title, TextView message, Button neutralBtn, Button negativeBtn, Button positiveBtn) {
+        Typeface typeface = ratingDialogOptions.typeface;
+        if (typeface != null) {
+            title.setTypeface(typeface, Typeface.BOLD);
+            message.setTypeface(typeface);
+            neutralBtn.setTypeface(typeface, Typeface.BOLD);
+            negativeBtn.setTypeface(typeface, Typeface.BOLD);
+            positiveBtn.setTypeface(typeface, Typeface.BOLD);
+        }
     }
 
     private static void launchEmailIntent(Context context, String email, String subject, String body) {
@@ -111,7 +220,7 @@ class RatingDialog {
 
     RatingDialog(RatingDialogOptions ratingDialogOptions) {
         this.ratingDialogOptions = ratingDialogOptions;
-        
+
     }
 
 }
