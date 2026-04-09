@@ -29,6 +29,25 @@ android {
     }
 }
 
+android.publishing {
+    singleVariant('release') {
+        withSourcesJar()
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.github.tpatterson'
+                artifactId = 'ratingmanager'
+                version = android.defaultConfig.versionName
+            }
+        }
+    }
+}
+
 dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
