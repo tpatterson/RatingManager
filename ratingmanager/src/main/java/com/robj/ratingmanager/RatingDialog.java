@@ -33,12 +33,115 @@ class RatingDialog {
         this.feedbackEmailAddress = feedbackEmail;
     }
 
+    // region Public entry points
+
     public void showRatingPopup(final Context context) {
-        if(!showFeedbackOption) {
+        if (!showFeedbackOption) {
             showLeaveRatingPopup(context);
             return;
         }
+        if (ratingDialogOptions.useCustomLayout) {
+            showRatingPopupCustom(context);
+        } else {
+            showRatingPopupLegacy(context);
+        }
+    }
 
+    public void showLeaveRatingPopup(final Context context) {
+        if (ratingDialogOptions.useCustomLayout) {
+            showLeaveRatingPopupCustom(context);
+        } else {
+            showLeaveRatingPopupLegacy(context);
+        }
+    }
+
+    private void showFeedbackPopup(final Context context) {
+        if (ratingDialogOptions.useCustomLayout) {
+            showFeedbackPopupCustom(context);
+        } else {
+            showFeedbackPopupLegacy(context);
+        }
+    }
+
+    // endregion
+
+    // region Legacy dialog (theme-driven AlertDialog)
+
+    private void showRatingPopupLegacy(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
+        builder.setMessage(ratingDialogOptions.initialPopupMessage);
+        builder.setPositiveButton(ratingDialogOptions.initialPopupPositiveBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onInitialPositiveClickListener != null)
+                ratingDialogOptions.onInitialPositiveClickListener.onClick();
+            showLeaveRatingPopup(context);
+        });
+        builder.setNegativeButton(ratingDialogOptions.initialPopupNegativeBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onInitialNegativeClickListener != null)
+                ratingDialogOptions.onInitialNegativeClickListener.onClick();
+            showFeedbackPopup(context);
+        });
+        builder.setNeutralButton(ratingDialogOptions.initialPopupLaterBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onInitialLaterClickListener != null)
+                ratingDialogOptions.onInitialLaterClickListener.onClick();
+            DataManager.setAskLater(context);
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private void showLeaveRatingPopupLegacy(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
+        builder.setTitle(ratingDialogOptions.ratingPopupTitle);
+        builder.setMessage(ratingDialogOptions.ratingPopupMessage);
+        builder.setPositiveButton(ratingDialogOptions.ratingPopupPositiveBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onRatingPositiveClickListener != null)
+                ratingDialogOptions.onRatingPositiveClickListener.onClick();
+            DataManager.setRatingLeft(context);
+            launchUrl(context, ratingDialogOptions.ratingUrl);
+        });
+        builder.setNegativeButton(ratingDialogOptions.ratingPopupLaterBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onRatingLaterClickListener != null)
+                ratingDialogOptions.onRatingLaterClickListener.onClick();
+            DataManager.setAskLater(context);
+        });
+        builder.setNeutralButton(ratingDialogOptions.ratingPopupNeverBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onRatingNegativeClickListener != null)
+                ratingDialogOptions.onRatingNegativeClickListener.onClick();
+            DataManager.setNeverAsk(context);
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    private void showFeedbackPopupLegacy(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId);
+        builder.setTitle(ratingDialogOptions.feedbackPopupTitle);
+        builder.setMessage(ratingDialogOptions.feedbackPopupMessage);
+        builder.setPositiveButton(ratingDialogOptions.feedbackPopupPositiveBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onFeedbackPositiveClickListener != null)
+                ratingDialogOptions.onFeedbackPositiveClickListener.onClick();
+            DataManager.setFeedbackLeft(context);
+            launchEmailIntent(context, feedbackEmailAddress, ratingDialogOptions.feedbackEmailSubject, ratingDialogOptions.feedbackEmailBody);
+        });
+        builder.setNegativeButton(ratingDialogOptions.feedbackPopupLaterBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onFeedbackLaterClickListener != null)
+                ratingDialogOptions.onFeedbackLaterClickListener.onClick();
+            DataManager.setAskLater(context);
+        });
+        builder.setNeutralButton(ratingDialogOptions.feedbackPopupNegativeBtnText, (dialog, which) -> {
+            if (ratingDialogOptions.onFeedbackNegativeClickListener != null)
+                ratingDialogOptions.onFeedbackNegativeClickListener.onClick();
+            DataManager.setNeverAsk(context);
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+    // endregion
+
+    // region Custom dialog (design-driven layout)
+
+    private void showRatingPopupCustom(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
         AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
                 .setView(view)
@@ -67,33 +170,31 @@ class RatingDialog {
         });
 
         neutralBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onInitialLaterClickListener != null)
+            if (ratingDialogOptions.onInitialLaterClickListener != null)
                 ratingDialogOptions.onInitialLaterClickListener.onClick();
             DataManager.setAskLater(context);
             dialog.dismiss();
         });
 
         negativeBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onInitialNegativeClickListener != null)
+            if (ratingDialogOptions.onInitialNegativeClickListener != null)
                 ratingDialogOptions.onInitialNegativeClickListener.onClick();
             dialog.dismiss();
             showFeedbackPopup(context);
         });
 
         positiveBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onInitialPositiveClickListener != null)
+            if (ratingDialogOptions.onInitialPositiveClickListener != null)
                 ratingDialogOptions.onInitialPositiveClickListener.onClick();
             dialog.dismiss();
             showLeaveRatingPopup(context);
         });
 
         dialog.show();
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
-        }    }
+        applyDialogBackground(context, dialog);
+    }
 
-    public void showLeaveRatingPopup(final Context context) {
+    private void showLeaveRatingPopupCustom(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
         AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
                 .setView(view)
@@ -122,21 +223,21 @@ class RatingDialog {
         });
 
         neutralBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onRatingLaterClickListener != null)
+            if (ratingDialogOptions.onRatingLaterClickListener != null)
                 ratingDialogOptions.onRatingLaterClickListener.onClick();
             DataManager.setAskLater(context);
             dialog.dismiss();
         });
 
         negativeBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onRatingNegativeClickListener != null)
+            if (ratingDialogOptions.onRatingNegativeClickListener != null)
                 ratingDialogOptions.onRatingNegativeClickListener.onClick();
             DataManager.setNeverAsk(context);
             dialog.dismiss();
         });
 
         positiveBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onRatingPositiveClickListener != null)
+            if (ratingDialogOptions.onRatingPositiveClickListener != null)
                 ratingDialogOptions.onRatingPositiveClickListener.onClick();
             DataManager.setRatingLeft(context);
             dialog.dismiss();
@@ -144,12 +245,10 @@ class RatingDialog {
         });
 
         dialog.show();
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
-        }    }
+        applyDialogBackground(context, dialog);
+    }
 
-    private void showFeedbackPopup(final Context context) {
+    private void showFeedbackPopupCustom(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
         AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
                 .setView(view)
@@ -178,21 +277,21 @@ class RatingDialog {
         });
 
         neutralBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onFeedbackLaterClickListener != null)
+            if (ratingDialogOptions.onFeedbackLaterClickListener != null)
                 ratingDialogOptions.onFeedbackLaterClickListener.onClick();
             DataManager.setAskLater(context);
             dialog.dismiss();
         });
 
         negativeBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onFeedbackNegativeClickListener != null)
+            if (ratingDialogOptions.onFeedbackNegativeClickListener != null)
                 ratingDialogOptions.onFeedbackNegativeClickListener.onClick();
             DataManager.setNeverAsk(context);
             dialog.dismiss();
         });
 
         positiveBtn.setOnClickListener(v -> {
-            if(ratingDialogOptions.onFeedbackPositiveClickListener != null)
+            if (ratingDialogOptions.onFeedbackPositiveClickListener != null)
                 ratingDialogOptions.onFeedbackPositiveClickListener.onClick();
             DataManager.setFeedbackLeft(context);
             dialog.dismiss();
@@ -200,7 +299,14 @@ class RatingDialog {
         });
 
         dialog.show();
+        applyDialogBackground(context, dialog);
+    }
 
+    // endregion
+
+    // region Helpers
+
+    private void applyDialogBackground(Context context, AlertDialog dialog) {
         Window window = dialog.getWindow();
         if (window != null) {
             window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
@@ -211,7 +317,6 @@ class RatingDialog {
         Typeface boldTypeface = ratingDialogOptions.boldTypeface;
         if (boldTypeface != null) {
             title.setTypeface(boldTypeface, Typeface.BOLD);
-            neutralBtn.setTypeface(boldTypeface, Typeface.BOLD);
             neutralBtn.setTypeface(boldTypeface, Typeface.BOLD);
             negativeBtn.setTypeface(boldTypeface, Typeface.BOLD);
             positiveBtn.setTypeface(boldTypeface, Typeface.BOLD);
@@ -284,9 +389,10 @@ class RatingDialog {
         context.startActivity(i);
     }
 
+    // endregion
+
     RatingDialog(RatingDialogOptions ratingDialogOptions) {
         this.ratingDialogOptions = ratingDialogOptions;
-
     }
 
 }

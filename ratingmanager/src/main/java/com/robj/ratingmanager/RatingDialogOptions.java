@@ -14,6 +14,7 @@ public class RatingDialogOptions {
     public final int primaryButtonColor;
     public final int outlinedButtonColor;
     public final int primaryButtonTextColor;
+    public final boolean useCustomLayout;
 
     public final String initialPopupMessage;
     public final String initialPopupPositiveBtnText;
@@ -45,13 +46,14 @@ public class RatingDialogOptions {
     public final OnRatingClickListener onFeedbackNegativeClickListener;
     public final OnRatingClickListener onFeedbackLaterClickListener;
 
-    public RatingDialogOptions(int dialogThemeResId, Typeface regularTypeface, Typeface boldTypeface, int primaryButtonColor, int outlinedButtonColor, int primaryButtonTextColor, String initialPopupMessage, String initialPopupPositiveBtnText, String initialPopupNegativeBtnText, String initialPopupLaterBtnText, String ratingPopupTitle, String ratingPopupMessage, String ratingPopupPositiveBtnText, String ratingPopupLaterBtnText, String ratingPopupNeverBtnText, String ratingUrl, String feedbackPopupTitle, String feedbackPopupMessage, String feedbackPopupNegativeBtnText, String feedbackPopupPositiveBtnText, String feedbackPopupLaterBtnText, String feedbackEmailSubject, String feedbackEmailBody, OnRatingClickListener onInitialPositiveClickListener, OnRatingClickListener onInitialNegativeClickListener, OnRatingClickListener onInitialLaterClickListener, OnRatingClickListener onRatingPositiveClickListener, OnRatingClickListener onRatingNegativeClickListener, OnRatingClickListener onRatingLaterClickListener, OnRatingClickListener onFeedbackPositiveClickListener, OnRatingClickListener onFeedbackNegativeClickListener, OnRatingClickListener onFeedbackLaterClickListener) {
+    public RatingDialogOptions(int dialogThemeResId, Typeface regularTypeface, Typeface boldTypeface, int primaryButtonColor, int outlinedButtonColor, int primaryButtonTextColor, boolean useCustomLayout, String initialPopupMessage, String initialPopupPositiveBtnText, String initialPopupNegativeBtnText, String initialPopupLaterBtnText, String ratingPopupTitle, String ratingPopupMessage, String ratingPopupPositiveBtnText, String ratingPopupLaterBtnText, String ratingPopupNeverBtnText, String ratingUrl, String feedbackPopupTitle, String feedbackPopupMessage, String feedbackPopupNegativeBtnText, String feedbackPopupPositiveBtnText, String feedbackPopupLaterBtnText, String feedbackEmailSubject, String feedbackEmailBody, OnRatingClickListener onInitialPositiveClickListener, OnRatingClickListener onInitialNegativeClickListener, OnRatingClickListener onInitialLaterClickListener, OnRatingClickListener onRatingPositiveClickListener, OnRatingClickListener onRatingNegativeClickListener, OnRatingClickListener onRatingLaterClickListener, OnRatingClickListener onFeedbackPositiveClickListener, OnRatingClickListener onFeedbackNegativeClickListener, OnRatingClickListener onFeedbackLaterClickListener) {
         this.dialogThemeResId = dialogThemeResId;
         this.regularTypeface = regularTypeface;
         this.boldTypeface = boldTypeface;
         this.primaryButtonColor = primaryButtonColor;
         this.outlinedButtonColor = outlinedButtonColor;
         this.primaryButtonTextColor = primaryButtonTextColor;
+        this.useCustomLayout = useCustomLayout;
         this.initialPopupMessage = initialPopupMessage;
         this.initialPopupPositiveBtnText = initialPopupPositiveBtnText;
         this.initialPopupNegativeBtnText = initialPopupNegativeBtnText;
@@ -83,7 +85,7 @@ public class RatingDialogOptions {
     /** @deprecated Use the constructor with Typeface parameters or the Builder API instead. */
     @Deprecated
     public RatingDialogOptions(int dialogThemeResId, String initialPopupMessage, String initialPopupPositiveBtnText, String initialPopupNegativeBtnText, String initialPopupLaterBtnText, String ratingPopupTitle, String ratingPopupMessage, String ratingPopupPositiveBtnText, String ratingPopupLaterBtnText, String ratingPopupNeverBtnText, String ratingUrl, String feedbackPopupTitle, String feedbackPopupMessage, String feedbackPopupNegativeBtnText, String feedbackPopupPositiveBtnText, String feedbackPopupLaterBtnText, String feedbackEmailSubject, String feedbackEmailBody, OnRatingClickListener onInitialPositiveClickListener, OnRatingClickListener onInitialNegativeClickListener, OnRatingClickListener onInitialLaterClickListener, OnRatingClickListener onRatingPositiveClickListener, OnRatingClickListener onRatingNegativeClickListener, OnRatingClickListener onRatingLaterClickListener, OnRatingClickListener onFeedbackPositiveClickListener, OnRatingClickListener onFeedbackNegativeClickListener, OnRatingClickListener onFeedbackLaterClickListener) {
-        this(dialogThemeResId, null, null, 0, 0, 0, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
+        this(dialogThemeResId, null, null, 0, 0, 0, false, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
     }
 
     public static class Builder {
@@ -321,7 +323,9 @@ public class RatingDialogOptions {
         }
 
         public RatingDialogOptions build() {
-            return new RatingDialogOptions(dialogThemeResId, regularTypeface, boldTypeface, primaryButtonColor, outlinedButtonColor, primaryButtonTextColor, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
+            boolean useCustomLayout = regularTypeface != null || boldTypeface != null
+                    || primaryButtonColor != 0 || outlinedButtonColor != 0 || primaryButtonTextColor != 0;
+            return new RatingDialogOptions(dialogThemeResId, regularTypeface, boldTypeface, primaryButtonColor, outlinedButtonColor, primaryButtonTextColor, useCustomLayout, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
         }
 
     }
