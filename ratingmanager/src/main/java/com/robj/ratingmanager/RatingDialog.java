@@ -1,5 +1,6 @@
 package com.robj.ratingmanager;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -231,6 +232,14 @@ class RatingDialog {
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
         applyColors(neutralBtn, negativeBtn, positiveBtn);
 
+        if (ratingDialogOptions.dialogBackgroundColor != 0) {
+            double luminance = ColorUtils.calculateLuminance(ratingDialogOptions.dialogBackgroundColor);
+            int tint = luminance < 0.5 ? Color.WHITE : Color.BLACK;
+            closeBtn.setColorFilter(tint);
+            title.setTextColor(tint);
+            message.setTextColor(ColorUtils.setAlphaComponent(tint, 0xB3));
+        }
+
         closeBtn.setOnClickListener(v -> {
             DataManager.setAskLater(context);
             dialog.dismiss();
@@ -265,7 +274,15 @@ class RatingDialog {
     private void applyDialogBackground(Context context, AlertDialog dialog) {
         Window window = dialog.getWindow();
         if (window != null) {
-            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+            if (ratingDialogOptions.dialogBackgroundColor != 0) {
+                GradientDrawable bg = new GradientDrawable();
+                bg.setShape(GradientDrawable.RECTANGLE);
+                bg.setCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics()));
+                bg.setColor(ratingDialogOptions.dialogBackgroundColor);
+                window.setBackgroundDrawable(bg);
+            } else {
+                window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+            }
         }
     }
 
@@ -337,6 +354,7 @@ class RatingDialog {
         context.startActivity(i);
     }
 
+    @SuppressLint("InlinedApi") // FLAG_ACTIVITY_NEW_DOCUMENT has same value as FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET on API <21
     private static void launchUrl(Context context, String url) {
         if (url == null) return;
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
