@@ -20,9 +20,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.ColorUtils;
+import android.support.v7.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.ColorUtils;
 
 /**
  * Created by Rob J on 16/09/17.

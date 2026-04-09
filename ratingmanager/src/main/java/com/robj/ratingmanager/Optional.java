@@ -2,7 +2,7 @@ package com.robj.ratingmanager;
 
 import java.util.NoSuchElementException;
 
-import androidx.annotation.Nullable;
+import android.support.annotation.Nullable;
 
 /**
  * Created by Rob J on 21/09/17.

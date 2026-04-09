@@ -4,9 +4,9 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.util.Log;
-import androidx.annotation.ColorInt;
-import androidx.annotation.Nullable;
-import androidx.annotation.StyleRes;
+import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 
 public class RatingDialogOptions {
 
