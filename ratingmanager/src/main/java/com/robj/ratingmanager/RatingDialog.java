@@ -9,6 +9,7 @@ import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.util.StateSet;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -200,6 +201,15 @@ class RatingDialog {
                 .setView(view)
                 .setCancelable(false)
                 .create();
+
+        dialog.setOnKeyListener((d, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                DataManager.setAskLater(context);
+                d.dismiss();
+                return true;
+            }
+            return false;
+        });
 
         TextView title = view.findViewById(R.id.dialog_title);
         TextView message = view.findViewById(R.id.dialog_message);
