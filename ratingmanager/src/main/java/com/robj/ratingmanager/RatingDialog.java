@@ -1,6 +1,7 @@
 package com.robj.ratingmanager;
 
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.util.Log;
 import android.util.StateSet;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -27,6 +29,8 @@ import androidx.core.graphics.ColorUtils;
  */
 
 class RatingDialog {
+
+    private static final String TAG = "RatingDialog";
 
     private final RatingDialogOptions ratingDialogOptions;
 
@@ -230,7 +234,7 @@ class RatingDialog {
         negativeBtn.setText(negativeText);
         positiveBtn.setText(positiveText);
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
-        applyColors(neutralBtn, negativeBtn, positiveBtn);
+        applyColors(context, neutralBtn, negativeBtn, positiveBtn);
 
         if (ratingDialogOptions.dialogBackgroundColor != 0) {
             double luminance = ColorUtils.calculateLuminance(ratingDialogOptions.dialogBackgroundColor);
@@ -247,14 +251,14 @@ class RatingDialog {
 
         neutralBtn.setOnClickListener(v -> {
             if (neutralListener != null) neutralListener.onClick();
-            neutralAction.run(context);
             dialog.dismiss();
+            neutralAction.run(context);
         });
 
         negativeBtn.setOnClickListener(v -> {
             if (negativeListener != null) negativeListener.onClick();
-            negativeAction.run(context);
             dialog.dismiss();
+            negativeAction.run(context);
         });
 
         positiveBtn.setOnClickListener(v -> {
@@ -301,16 +305,16 @@ class RatingDialog {
         }
     }
 
-    private void applyColors(Button neutralBtn, Button negativeBtn, Button positiveBtn) {
+    private void applyColors(Context context, Button neutralBtn, Button negativeBtn, Button positiveBtn) {
         int outlinedColor = ratingDialogOptions.outlinedButtonColor;
         if (outlinedColor != 0) {
-            neutralBtn.setBackground(createButtonDrawable(outlinedColor, 8));
-            negativeBtn.setBackground(createButtonDrawable(outlinedColor, 8));
+            neutralBtn.setBackground(createButtonDrawable(context, outlinedColor, 8));
+            negativeBtn.setBackground(createButtonDrawable(context, outlinedColor, 8));
         }
 
         int primaryColor = ratingDialogOptions.primaryButtonColor;
         if (primaryColor != 0) {
-            positiveBtn.setBackground(createButtonDrawable(primaryColor, 8));
+            positiveBtn.setBackground(createButtonDrawable(context, primaryColor, 8));
         }
 
         int primaryTextColor = ratingDialogOptions.primaryButtonTextColor;
@@ -325,10 +329,10 @@ class RatingDialog {
         }
     }
 
-    private static StateListDrawable createButtonDrawable(int color, float cornerRadiusDp) {
+    private static StateListDrawable createButtonDrawable(Context context, int color, float cornerRadiusDp) {
         float cornerRadiusPx = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, cornerRadiusDp,
-                android.content.res.Resources.getSystem().getDisplayMetrics());
+                context.getResources().getDisplayMetrics());
 
         GradientDrawable pressed = new GradientDrawable();
         pressed.setShape(GradientDrawable.RECTANGLE);
@@ -351,7 +355,11 @@ class RatingDialog {
         i.putExtra(Intent.EXTRA_SUBJECT, subject);
         i.putExtra(Intent.EXTRA_TEXT, body);
         i = Intent.createChooser(i, context.getString(R.string.dialog_open_with));
-        context.startActivity(i);
+        try {
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "No activity found to handle email intent", e);
+        }
     }
 
     @SuppressLint("InlinedApi") // FLAG_ACTIVITY_NEW_DOCUMENT has same value as FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET on API <21
@@ -360,7 +368,11 @@ class RatingDialog {
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_NEW_TASK);
         i = Intent.createChooser(i, context.getString(R.string.dialog_open_with));
-        context.startActivity(i);
+        try {
+            context.startActivity(i);
+        } catch (ActivityNotFoundException e) {
+            Log.w(TAG, "No activity found to handle URL intent: " + url, e);
+        }
     }
 
     // endregion
