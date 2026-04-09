@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -83,8 +84,10 @@ class RatingDialog {
         });
 
         dialog.show();
-        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
-    }
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+        }    }
 
     public void showLeaveRatingPopup(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
@@ -136,8 +139,10 @@ class RatingDialog {
         });
 
         dialog.show();
-        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
-    }
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+        }    }
 
     private void showFeedbackPopup(final Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
@@ -189,17 +194,26 @@ class RatingDialog {
         });
 
         dialog.show();
-        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+        }
     }
 
     private void applyTypeface(TextView title, TextView message, Button neutralBtn, Button negativeBtn, Button positiveBtn) {
-        Typeface typeface = ratingDialogOptions.typeface;
+        Typeface boldTypeface = ratingDialogOptions.boldTypeface;
+        if (boldTypeface != null) {
+            title.setTypeface(boldTypeface, Typeface.BOLD);
+            neutralBtn.setTypeface(boldTypeface, Typeface.BOLD);
+            neutralBtn.setTypeface(boldTypeface, Typeface.BOLD);
+            negativeBtn.setTypeface(boldTypeface, Typeface.BOLD);
+            positiveBtn.setTypeface(boldTypeface, Typeface.BOLD);
+        }
+
+        Typeface typeface = ratingDialogOptions.regularTypeface;
         if (typeface != null) {
-            title.setTypeface(typeface, Typeface.BOLD);
             message.setTypeface(typeface);
-            neutralBtn.setTypeface(typeface, Typeface.BOLD);
-            negativeBtn.setTypeface(typeface, Typeface.BOLD);
-            positiveBtn.setTypeface(typeface, Typeface.BOLD);
         }
     }
 
