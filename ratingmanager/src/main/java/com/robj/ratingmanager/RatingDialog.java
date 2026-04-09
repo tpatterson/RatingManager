@@ -2,11 +2,13 @@ package com.robj.ratingmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.util.StateSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Created by Rob J on 16/09/17.
@@ -241,8 +244,8 @@ class RatingDialog {
             positiveAction.run(context);
         });
 
-        dialog.show();
         applyDialogBackground(context, dialog);
+        dialog.show();
     }
 
     // endregion
@@ -287,15 +290,23 @@ class RatingDialog {
         if (primaryTextColor != 0) {
             positiveBtn.setTextColor(primaryTextColor);
         }
+
+        int outlinedTextColor = ratingDialogOptions.outlinedButtonTextColor;
+        if (outlinedTextColor != 0) {
+            neutralBtn.setTextColor(outlinedTextColor);
+            negativeBtn.setTextColor(outlinedTextColor);
+        }
     }
 
     private static StateListDrawable createButtonDrawable(int color, float cornerRadiusDp) {
-        float cornerRadiusPx = cornerRadiusDp * android.content.res.Resources.getSystem().getDisplayMetrics().density;
+        float cornerRadiusPx = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, cornerRadiusDp,
+                android.content.res.Resources.getSystem().getDisplayMetrics());
 
         GradientDrawable pressed = new GradientDrawable();
         pressed.setShape(GradientDrawable.RECTANGLE);
         pressed.setCornerRadius(cornerRadiusPx);
-        pressed.setColor(darkenColor(color));
+        pressed.setColor(ColorUtils.blendARGB(color, Color.BLACK, 0.15f));
 
         GradientDrawable normal = new GradientDrawable();
         normal.setShape(GradientDrawable.RECTANGLE);
@@ -306,15 +317,6 @@ class RatingDialog {
         drawable.addState(new int[]{android.R.attr.state_pressed}, pressed);
         drawable.addState(StateSet.WILD_CARD, normal);
         return drawable;
-    }
-
-    private static int darkenColor(int color) {
-        float factor = 0.85f;
-        int a = (color >> 24) & 0xff;
-        int r = (int) (((color >> 16) & 0xff) * factor);
-        int g = (int) (((color >> 8) & 0xff) * factor);
-        int b = (int) ((color & 0xff) * factor);
-        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     private static void launchEmailIntent(Context context, String email, String subject, String body) {

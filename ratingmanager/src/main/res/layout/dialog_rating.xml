@@ -50,7 +50,7 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:textAllCaps="false"
-        android:textColor="#0693E3"
+        android:textColor="@color/rating_primary"
         android:textSize="14sp" />
 
     <Button
@@ -62,7 +62,7 @@
         android:elevation="0dp"
         android:stateListAnimator="@null"
         android:textAllCaps="false"
-        android:textColor="#0693E3"
+        android:textColor="@color/rating_primary"
         android:textSize="14sp" />
 
     <Button
