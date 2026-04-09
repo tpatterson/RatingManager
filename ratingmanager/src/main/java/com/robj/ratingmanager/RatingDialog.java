@@ -3,7 +3,10 @@ package com.robj.ratingmanager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
+import android.util.StateSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -56,6 +59,7 @@ class RatingDialog {
         negativeBtn.setText(ratingDialogOptions.initialPopupNegativeBtnText);
         positiveBtn.setText(ratingDialogOptions.initialPopupPositiveBtnText);
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+        applyColors(neutralBtn, negativeBtn, positiveBtn);
 
         closeBtn.setOnClickListener(v -> {
             DataManager.setAskLater(context);
@@ -110,6 +114,7 @@ class RatingDialog {
         negativeBtn.setText(ratingDialogOptions.ratingPopupNeverBtnText);
         positiveBtn.setText(ratingDialogOptions.ratingPopupPositiveBtnText);
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+        applyColors(neutralBtn, negativeBtn, positiveBtn);
 
         closeBtn.setOnClickListener(v -> {
             DataManager.setAskLater(context);
@@ -165,6 +170,7 @@ class RatingDialog {
         negativeBtn.setText(ratingDialogOptions.feedbackPopupNegativeBtnText);
         positiveBtn.setText(ratingDialogOptions.feedbackPopupPositiveBtnText);
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
+        applyColors(neutralBtn, negativeBtn, positiveBtn);
 
         closeBtn.setOnClickListener(v -> {
             DataManager.setAskLater(context);
@@ -215,6 +221,52 @@ class RatingDialog {
         if (typeface != null) {
             message.setTypeface(typeface);
         }
+    }
+
+    private void applyColors(Button neutralBtn, Button negativeBtn, Button positiveBtn) {
+        int outlinedColor = ratingDialogOptions.outlinedButtonColor;
+        if (outlinedColor != 0) {
+            neutralBtn.setBackground(createButtonDrawable(outlinedColor, 8));
+            negativeBtn.setBackground(createButtonDrawable(outlinedColor, 8));
+        }
+
+        int primaryColor = ratingDialogOptions.primaryButtonColor;
+        if (primaryColor != 0) {
+            positiveBtn.setBackground(createButtonDrawable(primaryColor, 8));
+        }
+
+        int primaryTextColor = ratingDialogOptions.primaryButtonTextColor;
+        if (primaryTextColor != 0) {
+            positiveBtn.setTextColor(primaryTextColor);
+        }
+    }
+
+    private static StateListDrawable createButtonDrawable(int color, float cornerRadiusDp) {
+        float cornerRadiusPx = cornerRadiusDp * android.content.res.Resources.getSystem().getDisplayMetrics().density;
+
+        GradientDrawable pressed = new GradientDrawable();
+        pressed.setShape(GradientDrawable.RECTANGLE);
+        pressed.setCornerRadius(cornerRadiusPx);
+        pressed.setColor(darkenColor(color));
+
+        GradientDrawable normal = new GradientDrawable();
+        normal.setShape(GradientDrawable.RECTANGLE);
+        normal.setCornerRadius(cornerRadiusPx);
+        normal.setColor(color);
+
+        StateListDrawable drawable = new StateListDrawable();
+        drawable.addState(new int[]{android.R.attr.state_pressed}, pressed);
+        drawable.addState(StateSet.WILD_CARD, normal);
+        return drawable;
+    }
+
+    private static int darkenColor(int color) {
+        float factor = 0.85f;
+        int a = (color >> 24) & 0xff;
+        int r = (int) (((color >> 16) & 0xff) * factor);
+        int g = (int) (((color >> 8) & 0xff) * factor);
+        int b = (int) ((color & 0xff) * factor);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     private static void launchEmailIntent(Context context, String email, String subject, String body) {
