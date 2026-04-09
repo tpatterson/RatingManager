@@ -328,6 +328,7 @@ class RatingDialog {
     }
 
     private static void launchUrl(Context context, String url) {
+        if (url == null) return;
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_NEW_TASK);
         i = Intent.createChooser(i, context.getString(R.string.dialog_open_with));
