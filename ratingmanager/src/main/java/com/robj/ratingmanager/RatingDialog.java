@@ -236,7 +236,7 @@ class RatingDialog {
         applyTypeface(title, message, neutralBtn, negativeBtn, positiveBtn);
         applyColors(context, neutralBtn, negativeBtn, positiveBtn);
 
-        if (ratingDialogOptions.dialogBackgroundColor != 0) {
+        if (ratingDialogOptions.dialogBackgroundColor != null) {
             double luminance = ColorUtils.calculateLuminance(ratingDialogOptions.dialogBackgroundColor);
             int tint = luminance < 0.5 ? Color.WHITE : Color.BLACK;
             closeBtn.setColorFilter(tint);
@@ -278,7 +278,7 @@ class RatingDialog {
     private void applyDialogBackground(Context context, AlertDialog dialog) {
         Window window = dialog.getWindow();
         if (window != null) {
-            if (ratingDialogOptions.dialogBackgroundColor != 0) {
+            if (ratingDialogOptions.dialogBackgroundColor != null) {
                 GradientDrawable bg = new GradientDrawable();
                 bg.setShape(GradientDrawable.RECTANGLE);
                 bg.setCornerRadius(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, context.getResources().getDisplayMetrics()));
@@ -306,24 +306,24 @@ class RatingDialog {
     }
 
     private void applyColors(Context context, Button neutralBtn, Button negativeBtn, Button positiveBtn) {
-        int outlinedColor = ratingDialogOptions.outlinedButtonColor;
-        if (outlinedColor != 0) {
+        Integer outlinedColor = ratingDialogOptions.outlinedButtonColor;
+        if (outlinedColor != null) {
             neutralBtn.setBackground(createButtonDrawable(context, outlinedColor, 8));
             negativeBtn.setBackground(createButtonDrawable(context, outlinedColor, 8));
         }
 
-        int primaryColor = ratingDialogOptions.primaryButtonColor;
-        if (primaryColor != 0) {
+        Integer primaryColor = ratingDialogOptions.primaryButtonColor;
+        if (primaryColor != null) {
             positiveBtn.setBackground(createButtonDrawable(context, primaryColor, 8));
         }
 
-        int primaryTextColor = ratingDialogOptions.primaryButtonTextColor;
-        if (primaryTextColor != 0) {
+        Integer primaryTextColor = ratingDialogOptions.primaryButtonTextColor;
+        if (primaryTextColor != null) {
             positiveBtn.setTextColor(primaryTextColor);
         }
 
-        int outlinedTextColor = ratingDialogOptions.outlinedButtonTextColor;
-        if (outlinedTextColor != 0) {
+        Integer outlinedTextColor = ratingDialogOptions.outlinedButtonTextColor;
+        if (outlinedTextColor != null) {
             neutralBtn.setTextColor(outlinedTextColor);
             negativeBtn.setTextColor(outlinedTextColor);
         }
