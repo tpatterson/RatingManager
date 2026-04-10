@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="rating_primary">#0693E3</color>
-    <color name="rating_primary_pressed">#0580C9</color>
-    <color name="rating_outlined_bg">#ECF3F9</color>
-    <color name="rating_outlined_bg_pressed">#D9E6F0</color>
+    <color name="rm_rating_primary">#0693E3</color>
+    <color name="rm_rating_primary_pressed">#0580C9</color>
+    <color name="rm_rating_outlined_bg">#ECF3F9</color>
+    <color name="rm_rating_outlined_bg_pressed">#D9E6F0</color>
 </resources>

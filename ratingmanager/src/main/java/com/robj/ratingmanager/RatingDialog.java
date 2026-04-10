@@ -201,7 +201,7 @@ class RatingDialog {
                                   String neutralText, String negativeText, String positiveText,
                                   OnRatingClickListener neutralListener, OnRatingClickListener negativeListener, OnRatingClickListener positiveListener,
                                   ContextAction neutralAction, ContextAction negativeAction, ContextAction positiveAction) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_rating, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.rm_dialog_rating, null);
         AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
                 .setView(view)
                 .setCancelable(false)
@@ -216,12 +216,12 @@ class RatingDialog {
             return false;
         });
 
-        TextView title = view.findViewById(R.id.dialog_title);
-        TextView message = view.findViewById(R.id.dialog_message);
-        ImageButton closeBtn = view.findViewById(R.id.dialog_close);
-        Button neutralBtn = view.findViewById(R.id.btn_neutral);
-        Button negativeBtn = view.findViewById(R.id.btn_negative);
-        Button positiveBtn = view.findViewById(R.id.btn_positive);
+        TextView title = view.findViewById(R.id.rm_dialog_title);
+        TextView message = view.findViewById(R.id.rm_dialog_message);
+        ImageButton closeBtn = view.findViewById(R.id.rm_dialog_close);
+        Button neutralBtn = view.findViewById(R.id.rm_btn_neutral);
+        Button negativeBtn = view.findViewById(R.id.rm_btn_negative);
+        Button positiveBtn = view.findViewById(R.id.rm_btn_positive);
 
         title.setText(titleText);
         if (messageText != null) {
@@ -285,7 +285,7 @@ class RatingDialog {
                 bg.setColor(ratingDialogOptions.dialogBackgroundColor);
                 window.setBackgroundDrawable(bg);
             } else {
-                window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.bg_dialog_rounded));
+                window.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.rm_bg_dialog_rounded));
             }
         }
     }
