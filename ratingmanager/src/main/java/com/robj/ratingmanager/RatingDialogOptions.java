@@ -187,36 +187,85 @@ public class RatingDialogOptions {
             return this;
         }
 
+        /**
+         * Sets the regular typeface used for the dialog message text.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setRegularTypeface(Typeface regularTypeface) {
             this.regularTypeface = regularTypeface;
             return this;
         }
 
+        /**
+         * Sets the bold typeface used for the dialog title and buttons.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setBoldTypeface(Typeface boldTypeface) {
             this.boldTypeface = boldTypeface;
             return this;
         }
 
+        /**
+         * Sets the background color of the primary (positive) button.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setPrimaryButtonColor(@ColorInt int primaryButtonColor) {
             this.primaryButtonColor = primaryButtonColor;
             return this;
         }
 
+        /**
+         * Sets the background color of the outlined (neutral and negative) buttons.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setOutlinedButtonColor(@ColorInt int outlinedButtonColor) {
             this.outlinedButtonColor = outlinedButtonColor;
             return this;
         }
 
+        /**
+         * Sets the text color of the primary (positive) button.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setPrimaryButtonTextColor(@ColorInt int primaryButtonTextColor) {
             this.primaryButtonTextColor = primaryButtonTextColor;
             return this;
         }
 
+        /**
+         * Sets the text color of the outlined (neutral and negative) buttons.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setOutlinedButtonTextColor(@ColorInt int outlinedButtonTextColor) {
             this.outlinedButtonTextColor = outlinedButtonTextColor;
             return this;
         }
 
+        /**
+         * Sets the background color of the dialog window.
+         * <p><b>Note:</b> this property only takes effect when the custom layout
+         * is active ({@link #setUseCustomLayout(boolean)}), which requires
+         * API 21+. On older devices the legacy AlertDialog is used and this
+         * value is ignored.
+         */
         public Builder setDialogBackgroundColor(@ColorInt int dialogBackgroundColor) {
             this.dialogBackgroundColor = dialogBackgroundColor;
             return this;
@@ -383,6 +432,18 @@ public class RatingDialogOptions {
                         "useCustomLayout requires API 21+; falling back to legacy dialog on API "
                         + Build.VERSION.SDK_INT);
                 useCustomLayout = false;
+
+                boolean hasCustomProps = regularTypeface != null || boldTypeface != null
+                        || primaryButtonColor != null || outlinedButtonColor != null
+                        || primaryButtonTextColor != null || outlinedButtonTextColor != null
+                        || dialogBackgroundColor != null;
+                if (hasCustomProps) {
+                    Log.w("RatingDialogOptions",
+                            "Visual properties (typeface, button color, background color) "
+                            + "have no effect on API " + Build.VERSION.SDK_INT
+                            + " because the custom layout requires API 21+. "
+                            + "The legacy AlertDialog will be shown without these customizations.");
+                }
             }
 
             if (useCustomLayout && dialogThemeResIdExplicitlySet) {
