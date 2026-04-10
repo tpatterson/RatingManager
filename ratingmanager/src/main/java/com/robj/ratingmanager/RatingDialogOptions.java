@@ -98,6 +98,7 @@ public class RatingDialogOptions {
     public static class Builder {
 
         private int dialogThemeResId = R.style.RatingManagerTheme_Dialog;
+        private boolean dialogThemeResIdExplicitlySet;
         private Typeface regularTypeface;
         private Typeface boldTypeface;
         private Integer primaryButtonColor;
@@ -172,8 +173,17 @@ public class RatingDialogOptions {
             feedbackEmailBody = null;
         }
 
+        /**
+         * Sets the theme resource used for the legacy {@link AlertDialog}.
+         * <p><b>Note:</b> this theme is ignored when the custom layout is active
+         * (i.e.&nbsp;when {@link #setUseCustomLayout(boolean)} is {@code true} or
+         * when it is auto-enabled by setting visual properties such as typefaces,
+         * button colours, or a dialog background colour). The custom layout path
+         * always uses its own internal theme.
+         */
         public Builder setDialogThemeResId(@StyleRes int dialogThemeResId) {
             this.dialogThemeResId = dialogThemeResId;
+            this.dialogThemeResIdExplicitlySet = true;
             return this;
         }
 
@@ -373,6 +383,13 @@ public class RatingDialogOptions {
                         "useCustomLayout requires API 21+; falling back to legacy dialog on API "
                         + Build.VERSION.SDK_INT);
                 useCustomLayout = false;
+            }
+
+            if (useCustomLayout && dialogThemeResIdExplicitlySet) {
+                Log.w("RatingDialogOptions",
+                        "setDialogThemeResId() has no effect when the custom layout "
+                        + "is active. The custom layout uses its own internal theme "
+                        + "and the supplied dialogThemeResId will be ignored.");
             }
 
             return new RatingDialogOptions(dialogThemeResId, regularTypeface, boldTypeface, primaryButtonColor, outlinedButtonColor, primaryButtonTextColor, outlinedButtonTextColor, dialogBackgroundColor, useCustomLayout, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
