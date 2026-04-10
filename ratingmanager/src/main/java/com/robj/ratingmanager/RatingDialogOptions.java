@@ -3,6 +3,7 @@ package com.robj.ratingmanager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.Log;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
@@ -365,6 +366,15 @@ public class RatingDialogOptions {
                             + "setUseCustomLayout(true) explicitly.");
                 }
             }
+            // Custom layout requires API 21+ for proper elevation/animation support.
+            // On older devices, silently fall back to the legacy dialog.
+            if (useCustomLayout && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                Log.w("RatingDialogOptions",
+                        "useCustomLayout requires API 21+; falling back to legacy dialog on API "
+                        + Build.VERSION.SDK_INT);
+                useCustomLayout = false;
+            }
+
             return new RatingDialogOptions(dialogThemeResId, regularTypeface, boldTypeface, primaryButtonColor, outlinedButtonColor, primaryButtonTextColor, outlinedButtonTextColor, dialogBackgroundColor, useCustomLayout, initialPopupMessage, initialPopupPositiveBtnText, initialPopupNegativeBtnText, initialPopupLaterBtnText, ratingPopupTitle, ratingPopupMessage, ratingPopupPositiveBtnText, ratingPopupLaterBtnText, ratingPopupNeverBtnText, ratingUrl, feedbackPopupTitle, feedbackPopupMessage, feedbackPopupNegativeBtnText, feedbackPopupPositiveBtnText, feedbackPopupLaterBtnText, feedbackEmailSubject, feedbackEmailBody, onInitialPositiveClickListener, onInitialNegativeClickListener, onInitialLaterClickListener, onRatingPositiveClickListener, onRatingNegativeClickListener, onRatingLaterClickListener, onFeedbackPositiveClickListener, onFeedbackNegativeClickListener, onFeedbackLaterClickListener);
         }
 

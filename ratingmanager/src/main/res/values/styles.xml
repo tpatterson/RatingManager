@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="RatingManagerTheme.Dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <!-- Default theme for the legacy AlertDialog path (reverted to original). -->
+    <style name="RatingManagerTheme.Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Internal theme for the custom layout path. -->
+    <style name="RatingManagerTheme.Dialog.Custom" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
         <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
     </style>

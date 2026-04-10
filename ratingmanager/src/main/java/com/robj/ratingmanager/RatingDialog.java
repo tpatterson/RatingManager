@@ -202,7 +202,7 @@ class RatingDialog {
                                   OnRatingClickListener neutralListener, OnRatingClickListener negativeListener, OnRatingClickListener positiveListener,
                                   ContextAction neutralAction, ContextAction negativeAction, ContextAction positiveAction) {
         View view = LayoutInflater.from(context).inflate(R.layout.rm_dialog_rating, null);
-        AlertDialog dialog = new AlertDialog.Builder(context, ratingDialogOptions.dialogThemeResId)
+        AlertDialog dialog = new AlertDialog.Builder(context, R.style.RatingManagerTheme_Dialog_Custom)
                 .setView(view)
                 .setCancelable(false)
                 .create();
