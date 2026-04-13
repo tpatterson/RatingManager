@@ -77,6 +77,7 @@ final class DataManager {
         PrefUtils.writeIntPref(context, LEFT_FEEDBACK_BUILD, versionCode);
     }
 
+    @SuppressWarnings("deprecation") // PackageInfo.versionCode is sufficient; getLongVersionCode() requires API 28
     public static int getCurrentVersionCode(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
